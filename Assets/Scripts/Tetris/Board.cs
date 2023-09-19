@@ -264,7 +264,7 @@ public class Board : MonoBehaviour
             if (BlockRandom < ResourceRepo.FvWeightDict.Count)
             {
                 ObjectPool.FiveBlock fv = (ObjectPool.FiveBlock)BlockRandom;
-                Debug.Log(BlockRandom + " " + fv);
+                //Debug.Log(BlockRandom + " " + fv);
                 DragOnPiece tmp = ObjectPool.GetPrefabByEnum(fv).GetComponent<DragOnPiece>();
                 Element elem = RandColor(tmp.GrassWeight, tmp.WaterWeight, tmp.FireWeight, tmp.EarthWeight);
                 piece = ObjectPool.GetObject((ObjectPool.FiveBlock)BlockRandom, elem);

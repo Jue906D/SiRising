@@ -31,6 +31,20 @@ public class CharaData
         CurTacticSlot = curSlot;
     }
 
+    public CharaData(CharaData m_data, GridSlot curSlot)
+    {
+        ElementValues = new List<int>(m_data.ElementValues);
+        isMine = m_data.isMine;
+        CurHp = m_data.CurHp;
+        MaxHp = m_data.MaxHp;
+        ReHp = m_data.ReHp;
+        Ap = m_data.Ap;
+        As = m_data.As;
+        curOccupIndex = m_data.curOccupIndex;
+        CurTacticSlot = null;
+        CurBattleSlot = curSlot;
+    }
+
     public void AddElementsByArray(List<int> elements) //ÔªËØÔö·ù
     {
         for (int i = 0; i < elements.Count; i++)

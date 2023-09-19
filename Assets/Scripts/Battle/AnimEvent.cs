@@ -7,6 +7,6 @@ public class AnimEvent : MonoBehaviour
 
     void DeathEvent()
     {
-        StartCoroutine(gameObject.transform.parent.parent.gameObject.GetComponent<GridSlot>().DeathFinal());
+        gameObject.transform.parent.parent.gameObject.GetComponent<GridSlot>().DeathFinal();
     }
 }

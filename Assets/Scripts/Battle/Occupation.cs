@@ -41,6 +41,7 @@ public class Occupation : MonoBehaviour
     [SerializeField]public List<int> ElementReq;
 
     [SerializeField] public Animator anim;
+    [SerializeField] public Slider HpSlider;
 
     [SerializeField] public List<Vector2Int> AttackArrangeList;
 
@@ -50,7 +51,7 @@ public class Occupation : MonoBehaviour
     void Awake()
     {
         Hide();
-        AttackArrangeList = new List<Vector2Int>();
+        //AttackArrangeList = new List<Vector2Int>();
     }
     void OnEnable()
     {

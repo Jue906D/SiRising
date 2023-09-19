@@ -2821,7 +2821,7 @@ MonoBehaviour:
   - tile: {fileID: 11400000, guid: 33126cfc61999f94188b6eebbf8547ff, type: 2}
     tetromino: 2
     elem: 3
-  - tile: {fileID: 11400000, guid: b4b4f76ed042efa47b8251ff342fa564, type: 2}
+  - tile: {fileID: 11400000, guid: 7a246af9d5d8a2a439b462d938f417d0, type: 2}
     tetromino: 3
     elem: 2
   boardSize: {x: 10, y: 10}
@@ -5948,7 +5948,7 @@ MonoBehaviour:
   Fire: {fileID: 21300000, guid: f16fb44cac365de43b07ec683986ad8e, type: 3}
   Grass: {fileID: 21300000, guid: 0bed77ac4bb3d7c469719eb3741446b2, type: 3}
   Earth: {fileID: 21300000, guid: 000bbb32347549846b6b9202e1a1d1e1, type: 3}
-  Water: {fileID: 21300000, guid: 00a050756ea008842a71d754a3f0215c, type: 3}
+  Water: {fileID: 21300000, guid: f3d290615e53f5f449b82e1132ab496f, type: 3}
   BlockWeights: 
   LevelPriority: []
   TotalWeight: 0
@@ -6001,7 +6001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76bb95a980e05594a8aed383fb894093, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BattleTime: 10
+  BattleTime: 30
   RestTime: 0
 --- !u!1 &1983230153 stripped
 GameObject:

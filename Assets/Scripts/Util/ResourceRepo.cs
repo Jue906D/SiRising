@@ -57,25 +57,25 @@ public class ResourceRepo : MonoBehaviour
         {
             foreach (var weight in SpWeightDict)
             {
-                Debug.Log(weight.Key.ToString() + weight.Value);
+                //Debug.Log(weight.Key.ToString() + weight.Value);
                 TotalWeight += weight.Value;
                 BlockWeights.Add(weight.Value);
             }
             foreach (var weight in TrWeightDict)
             {
-                Debug.Log(weight.Key.ToString() + weight.Value);
+                //Debug.Log(weight.Key.ToString() + weight.Value);
                 TotalWeight += weight.Value;
                 BlockWeights.Add(weight.Value);
             }
             foreach (var weight in FrWeightDict)
             {
-                Debug.Log(weight.Key.ToString() + weight.Value);
+                //Debug.Log(weight.Key.ToString() + weight.Value);
                 TotalWeight += weight.Value;
                 BlockWeights.Add(weight.Value);
             }
             foreach (var weight in FvWeightDict)
             {
-                Debug.Log(weight.Key.ToString() + weight.Value);
+                //Debug.Log(weight.Key.ToString() + weight.Value);
                 TotalWeight += weight.Value;
                 BlockWeights.Add(weight.Value);
             }

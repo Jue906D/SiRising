@@ -303,8 +303,8 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0
-    functionName: get_preserveAspect
+  - time: 0.6666667
+    functionName: DeathEvent
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

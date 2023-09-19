@@ -31,6 +31,10 @@ public class InfoWindow : MonoBehaviour
 
     }
 
+    void Update()
+    {
+        Refresh();
+    }
 
     public void Refresh()
     {
