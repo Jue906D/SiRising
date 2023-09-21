@@ -449,7 +449,7 @@ public class BattleSystem : MonoBehaviour
         yield return StartCoroutine(BattleCharaAppear());
         IsTacticWindowAvailable = true;
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         BattleField.SetActive(true);
 
     }
@@ -477,7 +477,8 @@ public class BattleSystem : MonoBehaviour
                 }
                 else
                 {
-                    MyTacticSlots[i][j].Clear();
+                    Debug.Log("Regenerate New Base Character At: "+MyTacticSlots[i][j].Location);
+                    MyTacticSlots[i][j].ReGen();
                 }
                 //MyBattleSlots[i][j].Clear();    //data occup
 

@@ -76,12 +76,14 @@ public class Occupation : MonoBehaviour
 
     public void Show()
     {
+        anim.enabled = true;
         this.transform.localScale = new Vector3(1f, 1f, 1f);
         Display.SetActive(true);
     }
 
     public void Hide()
     {
+        anim.enabled = false;
         Display.SetActive(false);
     }
 

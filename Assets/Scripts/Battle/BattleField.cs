@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class BattleField : MonoBehaviour
 {
+    public static BattleField instance;
     [SerializeField] public float BattleTime;
     public float RestTime;
+    public int OndeadNum;
+    public int MyIsdeadNum;
+    public int EnemyIsdeadNum;
+
+
+    void Awake()
+    {
+        instance = this;
+    }
 
     void OnEnable()
     {
@@ -14,6 +24,7 @@ public class BattleField : MonoBehaviour
 
     void Start()
     {
+        EnemyIsdeadNum = MyIsdeadNum = OndeadNum = 0;
         for (int i = 0; i < BattleSystem.instance.MyBattleSlots.Length; i++)
         {
             for (int j = 0; j < BattleSystem.instance.MyBattleSlots[i].Length; j++)
@@ -26,25 +37,29 @@ public class BattleField : MonoBehaviour
 
     void Update()
     {
-        for (int i = 0; i < BattleSystem.instance.MyBattleSlots.Length; i++)
+        if (RestTime > 1e-4)
         {
-            for (int j = 0; j < BattleSystem.instance.MyBattleSlots[i].Length; j++)
+            for (int i = 0; i < BattleSystem.instance.MyBattleSlots.Length; i++)
             {
-                BattleSystem.instance.MyBattleSlots[i][j].TryAttack();      //ÏÈ¹¥»÷£¬Ö»¼õÑª
-                BattleSystem.instance.EnemyBattleSlots[i][j].TryAttack();   //
-                
-                BattleSystem.instance.MyBattleSlots[i][j].TryRecover();     
-                BattleSystem.instance.EnemyBattleSlots[i][j].TryRecover();
+                for (int j = 0; j < BattleSystem.instance.MyBattleSlots[i].Length; j++)
+                {
+                    BattleSystem.instance.MyBattleSlots[i][j].TryAttack();      //ÏÈ¹¥»÷£¬Ö»¼õÑª
+                    BattleSystem.instance.EnemyBattleSlots[i][j].TryAttack();   //
 
-                BattleSystem.instance.MyBattleSlots[i][j].TryDeath();
-                BattleSystem.instance.EnemyBattleSlots[i][j].TryDeath();
+                    BattleSystem.instance.MyBattleSlots[i][j].TryRecover();
+                    BattleSystem.instance.EnemyBattleSlots[i][j].TryRecover();
 
-                BattleSystem.instance.MyBattleSlots[i][j].TryMoveForward();        //²¹Î»
-                BattleSystem.instance.EnemyBattleSlots[i][j].TryMoveForward();
+                    BattleSystem.instance.MyBattleSlots[i][j].TryDeath();
+                    BattleSystem.instance.EnemyBattleSlots[i][j].TryDeath();
+
+                    BattleSystem.instance.MyBattleSlots[i][j].TryMoveForward();        //²¹Î»
+                    BattleSystem.instance.EnemyBattleSlots[i][j].TryMoveForward();
+                }
             }
         }
+        
         RestTime-=Time.deltaTime;
-        if (RestTime < 1e-4)
+        if (RestTime < 1e-4 && OndeadNum ==0)
         {
             for (int i = 0; i < BattleSystem.instance.MyBattleSlots.Length; i++)
             {
@@ -54,8 +69,24 @@ public class BattleField : MonoBehaviour
                     BattleSystem.instance.EnemyBattleSlots[i][j].StopBattle();
                 }
             }
-            BattleSystem.instance.BattleOver();
-            this.gameObject.SetActive(false);
+
+            BattleSystem.instance.MyBattleCost -= MyIsdeadNum;
+            BattleSystem.instance.EnemyBattleCost -= EnemyIsdeadNum;
+            if (BattleSystem.instance.EnemyBattleCost <= 0)
+            {
+                Debug.Log("Win!!");
+                return;
+            }
+            else if (BattleSystem.instance.MyBattleCost <= 0)
+            {
+                Debug.Log("GameOver!!");
+                return;
+            }
+            else
+            {
+                BattleSystem.instance.BattleOver();
+                this.gameObject.SetActive(false);
+            }
         }
     }
 

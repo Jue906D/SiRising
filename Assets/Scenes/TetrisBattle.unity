@@ -223,7 +223,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 14133869}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -6074.9995}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 67.49999, y: 67.49999, z: 67.49999}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -361,7 +361,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 28051406}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -6074.9995}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -949,7 +949,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 228610478}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -6074.9995}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 67.49999, y: 67.49999, z: 67.49999}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5155,7 +5155,7 @@ MonoBehaviour:
   EnemyBattleInfoStepLength: {x: -135, y: 135}
   EnemyBattleCost: 100
   MyBattleCost: 100
-  RoundsToBattle: 2
+  RoundsToBattle: 10
   BattleField: {fileID: 1961372477}
 --- !u!4 &1616581449
 Transform:
@@ -6003,6 +6003,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BattleTime: 30
   RestTime: 0
+  OndeadNum: 0
+  MyIsdeadNum: 0
+  EnemyIsdeadNum: 0
 --- !u!1 &1983230153 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3730786927579112420, guid: 133e734e438f2fc4bb509aa88842008e, type: 3}

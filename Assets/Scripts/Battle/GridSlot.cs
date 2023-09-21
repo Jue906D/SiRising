@@ -123,7 +123,7 @@ public class GridSlot : MonoBehaviour
 
     public void Init<T>(T Type, CharaData m_data)
     {
-        IsDead = false;
+        IsDead = false; //一定满员
         
         m_data.CurBattleSlot = this;
         data = m_data;
@@ -155,9 +155,10 @@ public class GridSlot : MonoBehaviour
         CharaObj.transform.SetParent(transform, false);
         CharaObj.transform.localPosition = Vector3.zero;
         data.curOccupIndex = ResourceRepo.instance.LevelPriority.Count - 1;
+        data.RefreshData(CurOccup);
         CharaObj.SetActive(true);
         CurOccup.Show();
-        BattleSystem.instance.MyBattleCost--;
+        IsDead = false;
     }
     public void AddElementsByArray(List<int> elements) //token
     {
@@ -293,6 +294,7 @@ public class GridSlot : MonoBehaviour
             //Debug.Log(CurOccup.name + IsMine + "" + Location.x + " " + Location.y + "Start Death"+data.CurHp);
             data.CurHp = 0;
             IsDead = true;             //正式死亡播放死亡动画，无法攻击，无法回复，被攻击无影响
+            BattleField.instance.OndeadNum++;
             CurOccup.anim.SetTrigger("Death");
             for (int i = Location.x + 1; i < BattleSystem.instance.BattleHeight; i++)                //3.后面全部上进位标识
             {
@@ -325,7 +327,15 @@ public class GridSlot : MonoBehaviour
                 BattleSystem.instance.EnemyBattleSlots[i][Location.y].ForwardAffirm++;
             }
         }
-        
+        BattleField.instance.OndeadNum--;
+        if (IsMine)
+        {
+            BattleField.instance.MyIsdeadNum++;
+        }
+        else
+        {
+            BattleField.instance.EnemyIsdeadNum++;
+        }
     }
     public void TryMoveForward()   //前面人都真的死亡了，直接移动补位，不会让死亡中的人也向前移动
     {
