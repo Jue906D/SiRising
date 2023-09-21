@@ -278,6 +278,12 @@ public class GridSlot : MonoBehaviour
             if (data.CurHp > data.MaxHp)    //满血限制
             {
                 data.CurHp = data.MaxHp;
+                CurOccup.HpSlider.value = data.CurHp / data.MaxHp;
+                CurOccup.HpSlider.gameObject.SetActive(false);
+            }
+            else
+            {
+                CurOccup.HpSlider.value = data.CurHp / data.MaxHp;
             }
             CurOccup.RecoverTime = 1f;                  //重置计时
         }
