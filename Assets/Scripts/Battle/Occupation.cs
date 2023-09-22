@@ -77,6 +77,11 @@ public class Occupation : MonoBehaviour
     public void Show()
     {
         anim.enabled = true;
+        anim.SetTrigger("Reset");
+        Color tmpColor = Display.GetComponent<Image>().color;
+        Display.GetComponent<Image>().color = new Color(
+            tmpColor.r,tmpColor.g, tmpColor.b, 255f
+        );
         this.transform.localScale = new Vector3(1f, 1f, 1f);
         Display.SetActive(true);
     }

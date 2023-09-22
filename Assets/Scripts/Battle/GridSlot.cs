@@ -46,7 +46,7 @@ public class GridSlot : MonoBehaviour
 
     void OnMouseDown()
     {
-        if (IsDead)
+        if (IsDead || !BattleSystem.instance.IsTacticWindowAvailable)
         {
             return;
         }
@@ -63,7 +63,7 @@ public class GridSlot : MonoBehaviour
 
     void OnMouseEnter()
     {
-        if (IsDead)
+        if (IsDead || !BattleSystem.instance.IsTacticWindowAvailable)
         {
             return;
         }
@@ -72,7 +72,7 @@ public class GridSlot : MonoBehaviour
 
     void OnMouseExit()
     {
-        if (IsDead)
+        if (IsDead || !BattleSystem.instance.IsTacticWindowAvailable)
         {
             return;
         }
@@ -227,21 +227,24 @@ public class GridSlot : MonoBehaviour
                 Debug.Log("Error range!!");
                 continue;
             }
-            if (!BattleSystem.instance.EnemyBattleSlots[ti][tj].IsDead) //存活，存在
+            if (IsMine)
             {
-                
-                if (IsMine)
+                //Debug.Log("My Attack At " + ti + "," + tj);
+                if (!BattleSystem.instance.EnemyBattleSlots[ti][tj].IsDead) //存活，存在
                 {
-                    //Debug.Log("My Attack At " + ti + "," + tj);
                     BattleSystem.instance.EnemyBattleSlots[ti][tj].UnderAttack(data.Ap);
                 }
-                else
+            }
+            else
+            {
+                //Debug.Log("Enemy Attack At " + ti + "," + tj);
+                if (!BattleSystem.instance.MyBattleSlots[ti][tj].IsDead) //存活，存在
                 {
-                    //Debug.Log("Enemy Attack At " + ti + "," + tj);
                     BattleSystem.instance.MyBattleSlots[ti][tj].UnderAttack(data.Ap);
                 }
-
+                
             }
+            
         }
     }
     public void UnderAttack(float point)    //受击减血，无下限
@@ -410,6 +413,7 @@ public class GridSlot : MonoBehaviour
         
     }               //一轮战斗结束后收拾参数
 
+    /*
     public void Regenerate()//直接替换为新的白板，全新数据，当末位进位时使用，末位连续进位几次就构造几次
     {
         if (IsMine)
@@ -439,5 +443,5 @@ public class GridSlot : MonoBehaviour
             BattleSystem.instance.EnemyBattleCost--;
         }
     }
-
+    */
 }

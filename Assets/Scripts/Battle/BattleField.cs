@@ -24,10 +24,6 @@ public class BattleField : MonoBehaviour
     {
         RestTime = BattleTime;
         Timer.SetActive(true);
-    }
-
-    void Start()
-    {
         EnemyIsdeadNum = MyIsdeadNum = OndeadNum = 0;
         for (int i = 0; i < BattleSystem.instance.MyBattleSlots.Length; i++)
         {
@@ -37,6 +33,11 @@ public class BattleField : MonoBehaviour
                 BattleSystem.instance.EnemyBattleSlots[i][j].StartBattle();
             }
         }
+    }
+
+    void Start()
+    {
+        
     }
 
     void Update()
@@ -79,11 +80,13 @@ public class BattleField : MonoBehaviour
             if (BattleSystem.instance.EnemyBattleCost <= 0)
             {
                 Debug.Log("Win!!");
+                this.gameObject.SetActive(false);
                 return;
             }
             else if (BattleSystem.instance.MyBattleCost <= 0)
             {
                 Debug.Log("GameOver!!");
+                this.gameObject.SetActive(false);
                 return;
             }
             else

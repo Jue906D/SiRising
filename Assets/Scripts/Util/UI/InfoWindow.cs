@@ -34,6 +34,10 @@ public class InfoWindow : MonoBehaviour
     void Update()
     {
         Refresh();
+        if (!BattleSystem.instance.IsTacticWindowAvailable)
+        {
+            this.gameObject.SetActive(false);
+        }
     }
 
     public void Refresh()
