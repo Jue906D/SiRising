@@ -6,6 +6,9 @@ public class BattleField : MonoBehaviour
 {
     public static BattleField instance;
     [SerializeField] public float BattleTime;
+    [SerializeField] public GameObject Timer;
+    [SerializeField] public Tp MyTp;
+    [SerializeField] public Tp EnemyTp;
     public float RestTime;
     public int OndeadNum;
     public int MyIsdeadNum;
@@ -20,6 +23,7 @@ public class BattleField : MonoBehaviour
     void OnEnable()
     {
         RestTime = BattleTime;
+        Timer.SetActive(true);
     }
 
     void Start()
@@ -88,6 +92,11 @@ public class BattleField : MonoBehaviour
                 this.gameObject.SetActive(false);
             }
         }
+    }
+
+    void OnDisable()
+    {
+        Timer.SetActive(false);
     }
 
 }

@@ -461,7 +461,7 @@ public class BattleSystem : MonoBehaviour
 
     public IEnumerator BattleToTactic()
     {
-        IsTacticWindowAvailable = false;
+        IsTacticWindowAvailable = false; 
         yield return StartCoroutine(BattleCharaDisappear());
         //Debug.Log("disappear");
         for (int i = 0; i < MyTacticSlots.Length; i++)
@@ -496,6 +496,7 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(SlideMove(TacticUI, TacticMoveDistance.y, Vector2.up, 50, 1f));
         yield return StartCoroutine(SlideMove(TacticContent, TacticMoveDistance.y, Vector2.up, 50, 1f));
         Debug.Log("tacticok");
+        BattleField.SetActive(false);
         yield return StartCoroutine(TacticCharaAppear());
         foreach (var piece in Board.instance.PiecesAvailable)
         {

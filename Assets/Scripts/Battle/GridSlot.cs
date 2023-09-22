@@ -173,7 +173,7 @@ public class GridSlot : MonoBehaviour
         CharaObj.gameObject.SetActive(false);               //失活当前，入库
         ObjectPool.ReturnObject(CharaObj,CurOccup.occup);
 
-        CharaObj = ObjectPool.GetObject(newOccup);  //重新取得，赋值，挂载父和设置位置，激活对象
+        CharaObj = ObjectPool.GetObject(newOccup.occup);  //重新取得，赋值，挂载父和设置位置，激活对象
         CurOccup = CharaObj.GetComponent<Occupation>();
         CharaObj.transform.SetParent(this.transform, false);
         CharaObj.transform.localPosition = Vector3.zero;
@@ -224,6 +224,7 @@ public class GridSlot : MonoBehaviour
             int tj = Location.y + CurOccup.AttackArrangeList[i].x;
             if (ti < 0 || tj < 0 || ti >= BattleSystem.instance.BattleHeight || tj >= BattleSystem.instance.BattleWidth)
             {
+                Debug.Log("Error range!!");
                 continue;
             }
             if (!BattleSystem.instance.EnemyBattleSlots[ti][tj].IsDead) //存活，存在
@@ -232,12 +233,12 @@ public class GridSlot : MonoBehaviour
                 if (IsMine)
                 {
                     //Debug.Log("My Attack At " + ti + "," + tj);
-                    BattleSystem.instance.EnemyBattleSlots[ti][tj].UnderAttack(CurOccup.Ap);
+                    BattleSystem.instance.EnemyBattleSlots[ti][tj].UnderAttack(data.Ap);
                 }
                 else
                 {
                     //Debug.Log("Enemy Attack At " + ti + "," + tj);
-                    BattleSystem.instance.MyBattleSlots[ti][tj].UnderAttack(CurOccup.Ap);
+                    BattleSystem.instance.MyBattleSlots[ti][tj].UnderAttack(data.Ap);
                 }
 
             }
@@ -301,6 +302,14 @@ public class GridSlot : MonoBehaviour
             data.CurHp = 0;
             IsDead = true;             //正式死亡播放死亡动画，无法攻击，无法回复，被攻击无影响
             BattleField.instance.OndeadNum++;
+            if (IsMine)
+            {
+                BattleField.instance.MyTp.CurTp--;
+            }
+            else
+            {
+                BattleField.instance.EnemyTp.CurTp--;
+            }
             CurOccup.anim.SetTrigger("Death");
             for (int i = Location.x + 1; i < BattleSystem.instance.BattleHeight; i++)                //3.后面全部上进位标识
             {
