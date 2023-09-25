@@ -509,6 +509,8 @@ public class BattleSystem : MonoBehaviour
                 if (!MyBattleSlots[i][j].IsDead)
                 {
                     MyTacticSlots[i][j].ExchangeData(MyBattleSlots[i][j]);
+                    MyTacticSlots[i][j].CurOccup.Hide();
+                    Debug.Log("exchange at "+i +" "+ j);
                 }
                 else
                 {

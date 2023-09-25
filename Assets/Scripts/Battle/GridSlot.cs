@@ -392,6 +392,10 @@ public class GridSlot : MonoBehaviour
     public void ExchangeData(GridSlot newSlot)          //此slot获取newSlot的数值
     {
         //Obj
+        if (CharaObj != null)
+        {
+            ObjectPool.ReturnObject(CharaObj,CurOccup.occup);//旧的归档！
+        }
         CharaObj = newSlot.CharaObj;                    //Obj引用赋值
         data = newSlot.data;
         data.CurTacticSlot = this;//data引用赋值
