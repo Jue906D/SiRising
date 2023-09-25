@@ -113,6 +113,7 @@ public class GridSlot : MonoBehaviour
 
     public void Init<T>(T Type)
     {
+        data.CurTacticSlot = this;
         CharaObj = ObjectPool.GetObject(Type);
         CurOccup = CharaObj.GetComponent<Occupation>();
         CharaObj.transform.SetParent(this.transform,false);
@@ -127,6 +128,7 @@ public class GridSlot : MonoBehaviour
         
         m_data.CurBattleSlot = this;
         data = m_data;
+        data.CurTacticSlot = this;
         CharaObj = ObjectPool.GetObject(Type);
         CurOccup = CharaObj.GetComponent<Occupation>();
         CharaObj.transform.SetParent(this.transform, false);
@@ -144,7 +146,10 @@ public class GridSlot : MonoBehaviour
 
     public void ReGen()
     {
-        ObjectPool.ReturnObject(CharaObj, CurOccup.occup);
+        if (CharaObj != null)
+        {
+            ObjectPool.ReturnObject(CharaObj, CurOccup.occup);
+        }
         CurOccup = null;
         CharaObj = null;
         data = null;
@@ -232,7 +237,7 @@ public class GridSlot : MonoBehaviour
                 //Debug.Log("My Attack At " + ti + "," + tj);
                 if (!BattleSystem.instance.EnemyBattleSlots[ti][tj].IsDead) //存活，存在
                 {
-                    BattleSystem.instance.EnemyBattleSlots[ti][tj].UnderAttack(data.Ap);
+                    BattleSystem.instance.EnemyBattleSlots[ti][tj].UnderAttack(data.Ap,CurOccup.AttackVFX);
                 }
             }
             else
@@ -240,17 +245,20 @@ public class GridSlot : MonoBehaviour
                 //Debug.Log("Enemy Attack At " + ti + "," + tj);
                 if (!BattleSystem.instance.MyBattleSlots[ti][tj].IsDead) //存活，存在
                 {
-                    BattleSystem.instance.MyBattleSlots[ti][tj].UnderAttack(data.Ap);
+                    BattleSystem.instance.MyBattleSlots[ti][tj].UnderAttack(data.Ap,CurOccup.AttackVFX);
                 }
                 
             }
             
         }
     }
-    public void UnderAttack(float point)    //受击减血，无下限
+    public void UnderAttack(float point,ObjectPool.VFX vfx)    //受击减血，无下限
     {
         //Debug.Log(CurOccup.name +IsMine + "" + Location.x + " " + Location.y + "Under Attack");
         CurOccup.anim.SetTrigger("UnderAttack");
+        GameObject particle = ObjectPool.GetObject(vfx);
+        particle.transform.SetParent(CurOccup.Particles,false);
+        particle.SetActive(true);
         data.CurHp -= point;
         if (data.CurHp < 0)
         {
@@ -385,7 +393,8 @@ public class GridSlot : MonoBehaviour
     {
         //Obj
         CharaObj = newSlot.CharaObj;                    //Obj引用赋值
-        data = newSlot.data;                            //data引用赋值
+        data = newSlot.data;
+        data.CurTacticSlot = this;//data引用赋值
         CurOccup = CharaObj.GetComponent<Occupation>();     //obj代码引用插入slot
         CharaObj.transform.SetParent(this.transform, false);        //obj prefab移动
         CharaObj.transform.localPosition = Vector3.zero;

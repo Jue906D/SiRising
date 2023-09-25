@@ -88,6 +88,10 @@ public class ObjectPool : MonoBehaviour
 
     [SerializeField] GameObject ApRp2_Sword;   //¹¥»Ø½£2
 
+    [SerializeField] GameObject UA_Explosion_1;
+    [SerializeField] GameObject Re_Recover_Plus;
+    [SerializeField] GameObject Tp_Teleport_1;
+
 
     public enum GridSlot
     {
@@ -159,6 +163,14 @@ public class ObjectPool : MonoBehaviour
         UpRightCorner5,
         DownLeftCorner5,
         DownRightCorner5
+    }
+
+
+    public enum VFX
+    {
+        UA_Explosion_1,
+        Re_Recover_Plus,
+        Tp_Teleport_1
     }
 
     void Awake()
@@ -262,6 +274,16 @@ public class ObjectPool : MonoBehaviour
                 newQue.Enqueue(CreateObject(occup));
             }
             ObjDict.Add(occup.ToString(), newQue);
+        }
+
+        foreach (VFX vfx in Enum.GetValues(typeof(VFX)))
+        {
+            Queue<GameObject> newQue = new Queue<GameObject>();
+            for (int j = 0; j < SlotCount; j++)
+            {
+                newQue.Enqueue(CreateObject(vfx));
+            }
+            ObjDict.Add(vfx.ToString(), newQue);
         }
         //characterPrefab = new GameObject[characterPrefab.Length];
         /*for (int i = 0; i < characterPrefab.Length; i++)
@@ -466,6 +488,17 @@ public class ObjectPool : MonoBehaviour
             case Occupation.Occup.ApRp2_Sword:
                 newObject = Instantiate(instance.ApRp2_Sword);
                 break;
+
+
+            case VFX.UA_Explosion_1:
+                newObject = Instantiate(instance.UA_Explosion_1);
+                break;
+            case VFX.Re_Recover_Plus:
+                newObject = Instantiate(instance.Re_Recover_Plus);
+                break;
+            case VFX.Tp_Teleport_1:
+                newObject = Instantiate(instance.Tp_Teleport_1);
+                break;
         }
         newObject.SetActive(false);
         newObject.transform.SetParent(instance.transform);
@@ -572,6 +605,13 @@ public class ObjectPool : MonoBehaviour
                 return instance.Ba_core;
             case Occupation.Occup.ApRp2_Sword:
                 return instance.ApRp2_Sword;
+                  
+            case VFX.UA_Explosion_1:
+                return instance.UA_Explosion_1;
+            case VFX.Re_Recover_Plus:
+                return instance.Re_Recover_Plus;
+            case VFX.Tp_Teleport_1:
+                return instance.Tp_Teleport_1;
         }
     }
 

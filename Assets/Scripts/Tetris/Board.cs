@@ -32,6 +32,9 @@ public class Board : MonoBehaviour
     public List<int> elemList;
 
     [SerializeField] public GameObject[] PiecesAvailable;
+    [SerializeField] public Vector2 DragLimitL;
+    [SerializeField] public Vector2 DragLimitR;
+
 
     public RectInt Bounds {                 //块存在的有效矩形区域，即边界
         get

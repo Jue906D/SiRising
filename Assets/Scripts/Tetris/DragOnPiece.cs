@@ -104,7 +104,7 @@ public class DragOnPiece : MonoBehaviour//, IBeginDragHandler, IDragHandler, IEn
     void Update()
     {
         MousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
+        /*
         if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.RightControl))
         {
             //Board.instance.RotateBoard(1);
@@ -114,6 +114,7 @@ public class DragOnPiece : MonoBehaviour//, IBeginDragHandler, IDragHandler, IEn
         {
             //Rotate(1);
         }
+        */
     }
 
     public void SetColor(Element element)
@@ -173,7 +174,7 @@ public class DragOnPiece : MonoBehaviour//, IBeginDragHandler, IDragHandler, IEn
     public static Vector3 RotatePos(Vector3 pos, string axis, float angle)
     {
         float axis_x = 0, axis_y = 0, axis_z = 0;
-        switch (axis)
+        switch (axis)   
         {
             case "X":
                 axis_x = 1;
@@ -213,6 +214,16 @@ public class DragOnPiece : MonoBehaviour//, IBeginDragHandler, IDragHandler, IEn
 
     private void OnMouseDrag()
     {
+        if (MousePosition.x >Board.instance.DragLimitR.x 
+            || MousePosition.x <Board.instance.DragLimitL.x
+            || MousePosition.y >Board.instance.DragLimitR.y
+            || MousePosition.y <Board.instance.DragLimitL.y)
+        {
+            isDragging = false;
+            transform.position = rawPosition;
+            Board.instance.CurDragPiece = null;
+        }
+
         if (IsPointerOverGameObject(Input.mousePosition)&& isDragging)
         {
             //Debug.Log("Drag");

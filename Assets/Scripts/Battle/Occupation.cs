@@ -45,6 +45,10 @@ public class Occupation : MonoBehaviour
 
     [SerializeField] public List<Vector2Int> AttackArrangeList;
 
+    [SerializeField] public Transform Particles;
+    [SerializeField] public ObjectPool.VFX AttackVFX;
+    [SerializeField] public ObjectPool.VFX TeleportVFX;
+
     public float AttackTime;
     public float RecoverTime;
 
@@ -80,7 +84,7 @@ public class Occupation : MonoBehaviour
         anim.SetTrigger("Reset");
         Color tmpColor = Display.GetComponent<Image>().color;
         Display.GetComponent<Image>().color = new Color(
-            tmpColor.r,tmpColor.g, tmpColor.b, 255f
+            255f,255f,255f, 255f
         );
         this.transform.localScale = new Vector3(1f, 1f, 1f);
         Display.SetActive(true);

@@ -106,6 +106,10 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] [Range(2,1000)] public int RoundsToBattle;
     [SerializeField] public GameObject BattleField;
 
+    public bool IsFirstEnemyGen;
+
+    //Enemy Gen
+    public List<int>[] RoundsAllElementAdd;
 
     void Awake()
     {
@@ -141,6 +145,15 @@ public class BattleSystem : MonoBehaviour
         }
         MyArmyStartPosition = new Vector3(MyArmyStartPosition.x, MyArmyStartPosition.y, MyArmyStartPosition.z);
         EnemyArmyStartPosition = new Vector3(EnemyArmyStartPosition.x, EnemyArmyStartPosition.y, EnemyArmyStartPosition.z);
+        RoundsAllElementAdd = new List<int>[BattleHeight];
+        for (int i = 0; i < RoundsAllElementAdd.Length; i++)
+        {
+            RoundsAllElementAdd[i] = new List<int>();
+            for (int j = 0; j < 5; j++)
+            {
+                RoundsAllElementAdd[i].Add(0);
+            }
+        }
     }
     // Start is called before the first frame update
     void Start()
@@ -148,6 +161,7 @@ public class BattleSystem : MonoBehaviour
         isBattleStart = true;
         isBattleRoundStart = false;
         IsTacticWindowAvailable = true;
+        IsFirstEnemyGen = true;
         SlotsInit();
         StartCoroutine(TacticCharaAppear());
     }
@@ -441,15 +455,29 @@ public class BattleSystem : MonoBehaviour
                 MyBattleSlots[i][j].Init(MyTacticSlots[i][j].CurOccup.occup, MyTacticSlots[i][j].data);      //data occup
 
                 //Enemy
-                EnemyBattleSlots[EnemyIndex[i]][j].TacticInfoWindow = BattleInfoWindow;
-                CharaData tmpData = new CharaData(MyTacticSlots[i][j].data, EnemyBattleSlots[EnemyIndex[i]][j]);
-                EnemyBattleSlots[EnemyIndex[i]][j].Init(MyTacticSlots[i][j].CurOccup.occup, tmpData);
+                if (IsFirstEnemyGen)
+                {
+                    EnemyBattleSlots[EnemyIndex[i]][j].TacticInfoWindow = BattleInfoWindow;
+                    CharaData tmpData = new CharaData(MyTacticSlots[i][j].data, EnemyBattleSlots[EnemyIndex[i]][j]);
+                    EnemyBattleSlots[EnemyIndex[i]][j].Init(MyTacticSlots[i][j].CurOccup.occup, tmpData);
+                }
+                else
+                {
+                    EnemyBattleSlots[EnemyIndex[i]][j].TacticInfoWindow = BattleInfoWindow;
+                    EnemyBattleSlots[EnemyIndex[i]][j].AddElementsByArray(RoundsAllElementAdd[EnemyIndex[i]]);                                                                                                                                                                                                                                                                                            
+                }
+
             }
+        }
+
+        if (IsFirstEnemyGen)
+        {
+            IsFirstEnemyGen = false;
         }
         yield return StartCoroutine(BattleCharaAppear());
         IsTacticWindowAvailable = true;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         BattleField.SetActive(true);
 
     }
@@ -461,6 +489,13 @@ public class BattleSystem : MonoBehaviour
 
     public IEnumerator BattleToTactic()
     {
+        for (int i = 0; i < RoundsAllElementAdd.Length; i++)        //unfixed
+        {
+            for (int j = 0; j < RoundsAllElementAdd[i].Count; j++)
+            {
+                RoundsAllElementAdd[i][j] = 0;
+            }
+        }
         IsTacticWindowAvailable = false; 
         yield return StartCoroutine(BattleCharaDisappear());
         //Debug.Log("disappear");
@@ -484,10 +519,11 @@ public class BattleSystem : MonoBehaviour
 
                 //Enemy
                 //EnemyBattleSlots[i][j].TacticInfoWindow = BattleInfoWindow;
-                if (!EnemyBattleSlots[i][j].IsDead)
+                if (EnemyBattleSlots[i][j].IsDead)
                 {
-                    EnemyBattleSlots[i][j].Clear();
+                    EnemyBattleSlots[i][j].ReGen();
                 }
+                EnemyBattleSlots[i][j].CurOccup.Hide();
             }
         }
         StartCoroutine(SlideMove(BattleUI, BattleMoveDistance.y, Vector2.up, 50, 1f));
@@ -524,9 +560,11 @@ public class BattleSystem : MonoBehaviour
         {
             for (int j = 0; j < MyTacticSlots[i].Length; j++)
             {
-
-                MyTacticSlots[i][j].CurOccup.Hide();
+                GameObject tmp = ObjectPool.GetObject(MyTacticSlots[i][j].CurOccup.TeleportVFX);
+                tmp.transform.SetParent(MyTacticSlots[i][j].CurOccup.Particles,false); 
+                tmp.SetActive(true);
                 yield return new WaitForSeconds(CharaDisappearTime);
+                MyTacticSlots[i][j].CurOccup.Hide();
             }
         }
     }
@@ -538,9 +576,11 @@ public class BattleSystem : MonoBehaviour
         {
             for (int j = 0; j < MyTacticSlots[i].Length; j++)
             {
-
-                MyTacticSlots[i][j].CurOccup.Show();
+                GameObject tmp = ObjectPool.GetObject(MyTacticSlots[i][j].CurOccup.TeleportVFX);
+                tmp.transform.SetParent(MyTacticSlots[i][j].CurOccup.Particles, false);
+                tmp.SetActive(true);
                 yield return new WaitForSeconds(CharaAppearTime);
+                MyTacticSlots[i][j].CurOccup.Show();
             }
         }
     }
@@ -552,12 +592,18 @@ public class BattleSystem : MonoBehaviour
         {
             for (int j = 0; j < MyBattleSlots[i].Length; j++)
             {
-
+                GameObject tmp1 = ObjectPool.GetObject(MyBattleSlots[i][j].CurOccup.TeleportVFX);
+                tmp1.transform.SetParent(MyBattleSlots[i][j].CurOccup.Particles, false);
+                tmp1.SetActive(true);
+                GameObject tmp2 = ObjectPool.GetObject(EnemyBattleSlots[i][j].CurOccup.TeleportVFX);
+                tmp2.transform.SetParent(EnemyBattleSlots[i][j].CurOccup.Particles, false);
+                tmp2.SetActive(true);
+                yield return new WaitForSeconds(CharaAppearTime);
                 //MyBattleSlots[BattleHeight -1 -j][i].CurOccup.Show();
                 MyBattleSlots[i][j].CurOccup.Show();
                 //EnemyBattleSlots[BattleHeight - 1 - j][i].CurOccup.Show();
                 EnemyBattleSlots[i][j].CurOccup.Show();
-                yield return new WaitForSeconds(CharaAppearTime);
+                
             }
         }
         //MyBattleSlots[1][3].CurOccup.Hide();
@@ -573,16 +619,28 @@ public class BattleSystem : MonoBehaviour
 
                 if (!MyBattleSlots[i][j].IsDead)
                 {
-                    MyBattleSlots[i][j].CurOccup.Hide();
+                    GameObject tmp1 = ObjectPool.GetObject(MyBattleSlots[i][j].CurOccup.TeleportVFX);
+                    tmp1.transform.SetParent(MyBattleSlots[i][j].CurOccup.Particles, false);
+                    tmp1.SetActive(true);
                 }
                 //MyBattleSlots[BattleHeight -1 -j][i].CurOccup.Show();
                 //EnemyBattleSlots[BattleHeight - 1 - j][i].CurOccup.Show();
                 if (!EnemyBattleSlots[i][j].IsDead)
                 {
-                    EnemyBattleSlots[i][j].CurOccup.Hide();
+                    GameObject tmp2 = ObjectPool.GetObject(EnemyBattleSlots[i][j].CurOccup.TeleportVFX);
+                    tmp2.transform.SetParent(EnemyBattleSlots[i][j].CurOccup.Particles, false);
+                    tmp2.SetActive(true);
                 }
 
                 yield return new WaitForSeconds(CharaDisappearTime);
+                if (!MyBattleSlots[i][j].IsDead)
+                {
+                    MyBattleSlots[i][j].CurOccup.Hide();
+                }
+                if (!EnemyBattleSlots[i][j].IsDead)
+                {
+                    EnemyBattleSlots[i][j].CurOccup.Hide();
+                }
             }
         }
         //MyBattleSlots[1][3].CurOccup.Hide();
