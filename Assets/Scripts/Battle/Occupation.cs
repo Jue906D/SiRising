@@ -52,9 +52,13 @@ public class Occupation : MonoBehaviour
     public float AttackTime;
     public float RecoverTime;
 
+    public Sprite RawTacticDisplayImage;
+    //public Sprite RawBattleDisplayImage;
+
     void Awake()
     {
         Hide();
+        RawTacticDisplayImage = Display.GetComponent<Image>().sprite;
         //AttackArrangeList = new List<Vector2Int>();
     }
     void OnEnable()
@@ -78,21 +82,45 @@ public class Occupation : MonoBehaviour
         
     }
 
-    public void Show()
+    public void Show(bool isTactic,bool isMine)
     {
-        anim.enabled = true;
-        anim.SetTrigger("Reset");
-        Color tmpColor = Display.GetComponent<Image>().color;
-        Display.GetComponent<Image>().color = new Color(
-            255f,255f,255f, 255f
-        );
-        this.transform.localScale = new Vector3(1f, 1f, 1f);
-        Display.SetActive(true);
+        if (isTactic)
+        {
+            anim.enabled = false;
+            Display.GetComponent<Image>().sprite = RawTacticDisplayImage;
+            Color tmpColor = Display.GetComponent<Image>().color;
+            Display.GetComponent<Image>().color = new Color(
+                255f, 255f, 255f, 255f
+            );
+            this.transform.localScale = new Vector3(1f, 1f, 1f);
+            Display.SetActive(true);
+        }
+        else
+        {
+            if (isMine && Display.transform.localScale.x > 0)
+            {
+                this.Display.transform.localScale = new Vector3(-this.Display.transform.localScale.x,
+                    this.Display.transform.localScale.y, this.Display.transform.localScale.z);
+            }
+            anim.enabled = true;
+            anim.SetTrigger("Reset");
+            Color tmpColor = Display.GetComponent<Image>().color;
+            Display.GetComponent<Image>().color = new Color(
+                255f, 255f, 255f, 255f
+            );
+            this.transform.localScale = new Vector3(1f, 1f, 1f);
+            Display.SetActive(true);
+        }
     }
 
     public void Hide()
     {
         anim.enabled = false;
+        if (this.Display.transform.localScale.x < 0)
+        {
+            this.Display.transform.localScale = new Vector3(-this.Display.transform.localScale.x,
+                this.Display.transform.localScale.y, this.Display.transform.localScale.z);
+        }
         Display.SetActive(false);
     }
 
@@ -148,7 +176,7 @@ public class Occupation : MonoBehaviour
 
     public void LevelUpEnterGrid()
     {
-        this.Show();
+        this.Show(true,true);
         FlashColor(0.1f, new Color(255, 0, 0, 255));
     }
 }

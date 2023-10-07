@@ -508,7 +508,7 @@ public class BattleSystem : MonoBehaviour
                 //window
                 if (!MyBattleSlots[i][j].IsDead)
                 {
-                    MyTacticSlots[i][j].ExchangeData(MyBattleSlots[i][j]);
+                    MyTacticSlots[i][j].ExchangeData(MyBattleSlots[i][j],true);
                     MyTacticSlots[i][j].CurOccup.Hide();
                     Debug.Log("exchange at "+i +" "+ j);
                 }
@@ -582,7 +582,7 @@ public class BattleSystem : MonoBehaviour
                 tmp.transform.SetParent(MyTacticSlots[i][j].CurOccup.Particles, false);
                 tmp.SetActive(true);
                 yield return new WaitForSeconds(CharaAppearTime);
-                MyTacticSlots[i][j].CurOccup.Show();
+                MyTacticSlots[i][j].CurOccup.Show(true,true);
             }
         }
     }
@@ -602,9 +602,9 @@ public class BattleSystem : MonoBehaviour
                 tmp2.SetActive(true);
                 yield return new WaitForSeconds(CharaAppearTime);
                 //MyBattleSlots[BattleHeight -1 -j][i].CurOccup.Show();
-                MyBattleSlots[i][j].CurOccup.Show();
+                MyBattleSlots[i][j].CurOccup.Show(false,true);
                 //EnemyBattleSlots[BattleHeight - 1 - j][i].CurOccup.Show();
-                EnemyBattleSlots[i][j].CurOccup.Show();
+                EnemyBattleSlots[i][j].CurOccup.Show(false,false);
                 
             }
         }

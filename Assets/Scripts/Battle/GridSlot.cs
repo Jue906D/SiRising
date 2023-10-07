@@ -162,7 +162,7 @@ public class GridSlot : MonoBehaviour
         data.curOccupIndex = ResourceRepo.instance.LevelPriority.Count - 1;
         data.RefreshData(CurOccup);
         CharaObj.SetActive(true);
-        CurOccup.Show();
+        //CurOccup.Show(true);              //!!!!!!!!
         IsDead = false;
     }
     public void AddElementsByArray(List<int> elements) //token
@@ -223,6 +223,7 @@ public class GridSlot : MonoBehaviour
     }
     public void Attack()                    //攻击,死了不打
     {
+        CurOccup.anim.SetTrigger("Attack");
         for (int i = 0; i < CurOccup.AttackArrangeList.Count; i++)      //所有可攻击位置，如果有存活单位
         {
             int ti = CurOccup.AttackArrangeList[i].y;   //?
@@ -376,11 +377,11 @@ public class GridSlot : MonoBehaviour
             Debug.Log("Move from "+Location+" to "+ (Location.x - ForwardAffirm) + ","+ (Location.y));
             if (IsMine)
             {
-                BattleSystem.instance.MyBattleSlots[Location.x - ForwardAffirm][Location.y].ExchangeData(this);
+                BattleSystem.instance.MyBattleSlots[Location.x - ForwardAffirm][Location.y].ExchangeData(this,false);
             }
             else
             {
-                BattleSystem.instance.EnemyBattleSlots[Location.x - ForwardAffirm][Location.y].ExchangeData(this);
+                BattleSystem.instance.EnemyBattleSlots[Location.x - ForwardAffirm][Location.y].ExchangeData(this,false);
             }
             ForwardAffirm = ForwardSign = 0;
         }
@@ -389,7 +390,7 @@ public class GridSlot : MonoBehaviour
             Debug.Log("ERROR!");
         }
     }
-    public void ExchangeData(GridSlot newSlot)          //此slot获取newSlot的数值
+    public void ExchangeData(GridSlot newSlot, bool isTactic)          //此slot获取newSlot的数值
     {
         //Obj
         if (CharaObj != null)
@@ -402,7 +403,7 @@ public class GridSlot : MonoBehaviour
         CurOccup = CharaObj.GetComponent<Occupation>();     //obj代码引用插入slot
         CharaObj.transform.SetParent(this.transform, false);        //obj prefab移动
         CharaObj.transform.localPosition = Vector3.zero;
-        CurOccup.Show();                                //显示
+        CurOccup.Show(isTactic,IsMine);                                //显示
         //param
         IsDead = newSlot.IsDead;
         IsMine = newSlot.IsMine;
