@@ -34,7 +34,8 @@ public class Board : MonoBehaviour
     [SerializeField] public GameObject[] PiecesAvailable;
     [SerializeField] public Vector2 DragLimitL;
     [SerializeField] public Vector2 DragLimitR;
-
+    [SerializeField] public Vector3 PrefabScale;
+    [SerializeField] public float TileScale;
 
     public RectInt Bounds {                 //块存在的有效矩形区域，即边界
         get
@@ -358,13 +359,13 @@ public class Board : MonoBehaviour
         // The position is only valid if every cell is valid
         for (int i = 0; i < cells.Count; i++)
         {
-            Vector3 floatposition = (RotatePos(cells[i],"Z",rotate*90) + position);
+            Vector3 floatposition = RotatePos(cells[i],"Z",rotate*90) * TileScale + position;
             Vector3Int tilePosition = new Vector3Int(
-                (int)Math.Round(floatposition.x - this.transform.position.x -0.5, 0),
-                (int)Math.Round(floatposition.y - this.transform.position.y -0.5, 0),
+                (int)Math.Floor((floatposition.x - this.transform.position.x)/TileScale),
+                (int)Math.Floor((floatposition.y - this.transform.position.y) / TileScale),
                 0
                 );
-            //Debug.Log(tilePosition);
+            Debug.Log(floatposition +" "+ this.transform.position + " "+tilePosition);
             // 出圈了
             if (!bounds.Contains((Vector2Int)tilePosition))
             {
