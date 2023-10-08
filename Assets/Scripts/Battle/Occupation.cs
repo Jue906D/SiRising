@@ -17,10 +17,18 @@ public class Occupation : MonoBehaviour
 
         ApRp2_Sword    //攻回剑2
 
-
-
-
     }
+
+
+    [SerializeField] public int DataKey;
+
+    [SerializeField] public int AttackMode = 0;
+    //0 无
+    //1 前1
+    //2 后1
+    //3 固定后 十字
+    //4 邻接 宽3
+    //5 前1行
 
     [SerializeField] public GameObject Display;
     [SerializeField] public Occup occup;
@@ -59,6 +67,7 @@ public class Occupation : MonoBehaviour
     {
         Hide();
         RawTacticDisplayImage = Display.GetComponent<Image>().sprite;
+        
         //AttackArrangeList = new List<Vector2Int>();
     }
     void OnEnable()
@@ -66,6 +75,22 @@ public class Occupation : MonoBehaviour
         AttackTime = -20f;
         RecoverTime = -20f;
     }
+
+    public void RefreshData()
+    {
+        FireReq = DataLoader.instance.config.Fire[DataKey];
+        WaterReq = DataLoader.instance.config.Water[DataKey];
+        GrassReq = DataLoader.instance.config.Grass[DataKey];
+        EarthReq = DataLoader.instance.config.Earth[DataKey];
+
+        Ap = DataLoader.instance.config.Attack[DataKey];
+        As = DataLoader.instance.config.AttackSpeed[DataKey];
+        Hp = DataLoader.instance.config.Health[DataKey];
+        Rp = DataLoader.instance.config.Recharge[DataKey];
+
+        AttackMode = DataLoader.instance.config.AttackMode[DataKey];
+    }
+
     void ElemDataInit()
     {
         ElementReq.Clear();
@@ -74,6 +99,11 @@ public class Occupation : MonoBehaviour
         ElementReq.Add(WaterReq);
         ElementReq.Add(FireReq);
         ElementReq.Add(EarthReq);
+    }
+
+    void Start()
+    {
+        RefreshData();
     }
 
     // Update is called once per frame

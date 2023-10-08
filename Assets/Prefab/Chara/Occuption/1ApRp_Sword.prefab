@@ -753,6 +753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643cfbbd26dde9c43a9f0926efa2891e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DataKey: 2
   Display: {fileID: 2379029277569980084}
   occup: 1
   Hp: 20
@@ -770,8 +771,12 @@ MonoBehaviour:
   AttackArrangeList:
   - {x: 0, y: 0}
   - {x: 0, y: 1}
+  Particles: {fileID: 0}
+  AttackVFX: 0
+  TeleportVFX: 0
   AttackTime: 0
   RecoverTime: 0
+  RawTacticDisplayImage: {fileID: 0}
 --- !u!1 &5562206296954650830
 GameObject:
   m_ObjectHideFlags: 0

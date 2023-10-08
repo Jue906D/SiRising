@@ -14,7 +14,7 @@ public class ObjectPool : MonoBehaviour
 
     [SerializeField] public int MinionPoolCount = 100;
     [SerializeField] public int UIPoolCount = 100;
-    [SerializeField] public int SlotCount = 100;
+    [SerializeField] public int SlotCount = 200;
 
     //[SerializeField] GameObject[] characterPrefab;
     [SerializeField] GameObject Pope;
@@ -641,14 +641,25 @@ public class ObjectPool : MonoBehaviour
         }
         else
         {
+            //Debug.Log("!!!!!!Create"+type);
             return CreateObject(type);
         }
     }
 
     public static void ReturnObject<T>(GameObject dead, T type)
     {
-        dead.transform.SetParent(ObjectPool.instance.transform,false);
-        dead.SetActive(false);
-        instance.ObjDict[type.ToString()].Enqueue(dead);
+        
+        
+        if (dead == null)
+        {
+            Debug.LogError("null return object!!");
+        }
+        else
+        {
+            dead.transform.SetParent(ObjectPool.instance.transform, false);
+            dead.SetActive(false);
+            instance.ObjDict[type.ToString()].Enqueue(dead);
+        }
+        
     }
 }

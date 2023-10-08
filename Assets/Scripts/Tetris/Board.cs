@@ -365,7 +365,7 @@ public class Board : MonoBehaviour
                 (int)Math.Floor((floatposition.y - this.transform.position.y) / TileScale),
                 0
                 );
-            Debug.Log(floatposition +" "+ this.transform.position + " "+tilePosition);
+            //Debug.Log(floatposition +" "+ this.transform.position + " "+tilePosition);
             // ณ๖ศฆมห
             if (!bounds.Contains((Vector2Int)tilePosition))
             {

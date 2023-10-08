@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Security.Authentication;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Debug = UnityEngine.Debug;
 
 public class GridSlot : MonoBehaviour
 {
@@ -136,20 +138,46 @@ public class GridSlot : MonoBehaviour
         CharaObj.SetActive(true);
     }
 
-    public void Clear()
+    public void Clear(bool isDeChara)
     {
-        ObjectPool.ReturnObject(CharaObj,CurOccup.occup); 
-        //CurOccup = null;
-        //CharaObj = null;
-        //data = null;
+        if (CharaObj != null && isDeChara)
+        {
+            ObjectPool.ReturnObject(CharaObj, CurOccup.occup);
+        }
+        CurOccup = null;
+        CharaObj = null;
+        data = null;
     }
 
-    public void ReGen()
+    public void MyReGen()
     {
         if (CharaObj != null)
         {
             ObjectPool.ReturnObject(CharaObj, CurOccup.occup);
         }
+        CurOccup = null;
+        CharaObj = null;
+        data = null;
+
+        data = new CharaData(this);
+        CharaObj = ObjectPool.GetObject(Occupation.Occup.Base0);
+        CurOccup = CharaObj.GetComponent<Occupation>();
+        CharaObj.transform.SetParent(transform, false);
+        CharaObj.transform.localPosition = Vector3.zero;
+        data.curOccupIndex = ResourceRepo.instance.LevelPriority.Count - 1;
+        data.RefreshData(CurOccup);
+        CharaObj.SetActive(true);
+        //CurOccup.Show(true);              //!!!!!!!!
+        IsDead = false;
+    }
+
+    public void EnemyReGen()
+    {
+        /*
+        if (CharaObj != null)
+        {
+            ObjectPool.ReturnObject(CharaObj, CurOccup.occup);
+        }*/
         CurOccup = null;
         CharaObj = null;
         data = null;
@@ -221,6 +249,151 @@ public class GridSlot : MonoBehaviour
             CurOccup.AttackTime -= Time.deltaTime;
         }
     }
+
+    public void Attack()                    //攻击,死了不打
+    {
+        CurOccup.anim.SetTrigger("Attack");
+        int ti,tj,tk;
+        List<Vector2Int> AttackArrange = new List<Vector2Int>(5);
+        AttackArrange.Clear();
+        switch (CurOccup.AttackMode)
+        {
+            default:
+            case 0:
+                break;
+            case 1:
+                ti = 0;   //?
+                tj = Location.y;
+                AttackArrange.Add(new Vector2Int(ti,tj));
+                break;
+            case 2:
+                ti = 0;
+                tj = Location.y;
+                if (IsMine)
+                {
+                    for (int i = BattleSystem.instance.BattleHeight - 1; i >= 0; --i)
+                    {
+                        if (!BattleSystem.instance.EnemyBattleSlots[i][tj].IsDead)
+                        {
+                            ti = i;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = BattleSystem.instance.BattleHeight - 1; i >= 0; --i)
+                    {
+                        if (!BattleSystem.instance.MyBattleSlots[i][tj].IsDead)
+                        {
+                            ti = i;
+                            break;
+                        }
+                    }
+                }
+                AttackArrange.Add(new Vector2Int(ti, tj));
+                break;
+            case 3:
+                ti = 0;
+                tj = Location.y;
+                tk = -1;
+                if (IsMine)
+                {
+                    for (int i = BattleSystem.instance.BattleHeight - 1; i >= 0; --i)
+                    {
+                        if (!BattleSystem.instance.EnemyBattleSlots[i][tj].IsDead)
+                        {
+                            ti = i;
+                            if (tk >= 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                tk = ti;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = BattleSystem.instance.BattleHeight - 1; i >= 0; --i)
+                    {
+                        if (!BattleSystem.instance.MyBattleSlots[i][tj].IsDead)
+                        {
+                            ti = i;
+                            if (tk >= 0)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                tk = ti;
+                            }
+                        }
+                    }
+                }
+                AttackArrange.Add(new Vector2Int(ti, tj));
+                AttackArrange.Add(new Vector2Int(ti -1, tj));
+                AttackArrange.Add(new Vector2Int(ti +1, tj));
+                AttackArrange.Add(new Vector2Int(ti, tj -1));
+                AttackArrange.Add(new Vector2Int(ti, tj +1));
+                break;
+            case 4:
+                if (Location.x == 0) //仅接敌
+                {
+                    ti = 0;   //
+                    tj = Location.y;
+                    AttackArrange.Add(new Vector2Int(ti, tj));
+                    AttackArrange.Add(new Vector2Int(ti, tj-1));
+                    AttackArrange.Add(new Vector2Int(ti, tj+1));
+                }
+                break;
+            case 5:
+                ti = 0;   //
+                tj = Location.y;
+                AttackArrange.Add(new Vector2Int(ti, 0));
+                AttackArrange.Add(new Vector2Int(ti, 1));
+                AttackArrange.Add(new Vector2Int(ti, 2));
+                AttackArrange.Add(new Vector2Int(ti, 3));
+                AttackArrange.Add(new Vector2Int(ti, 4));
+                break;
+        }
+        Debug.Log("AttackMode"+CurOccup.AttackMode);
+        for (int i = 0; i < AttackArrange.Count; i++)      //所有可攻击位置，如果有存活单位
+        {
+            //int ti = CurOccup.AttackArrangeList[i].y;   //?
+            //int tj = Location.y + CurOccup.AttackArrangeList[i].x;
+            ti = AttackArrange[i].x;
+            tj = AttackArrange[i].y;
+            if (ti < 0 || tj < 0 || ti >= BattleSystem.instance.BattleHeight || tj >= BattleSystem.instance.BattleWidth)
+            {
+                //Debug.Log("Error range!!");
+                continue;
+            }
+            if (IsMine)
+            {
+                //Debug.Log("My Attack At " + ti + "," + tj);
+                if (!BattleSystem.instance.EnemyBattleSlots[ti][tj].IsDead) //存活，存在
+                {
+                    Debug.Log("Ap" + data.Ap);
+                    BattleSystem.instance.EnemyBattleSlots[ti][tj].UnderAttack(data.Ap, CurOccup.AttackVFX);
+                }
+            }
+            else
+            {
+                //Debug.Log("Enemy Attack At " + ti + "," + tj);
+                if (!BattleSystem.instance.MyBattleSlots[ti][tj].IsDead) //存活，存在
+                {
+                    Debug.Log("Ap" + data.Ap);
+                    BattleSystem.instance.MyBattleSlots[ti][tj].UnderAttack(data.Ap, CurOccup.AttackVFX);
+                }
+
+            }
+        }
+    }
+
+    /*
     public void Attack()                    //攻击,死了不打
     {
         CurOccup.anim.SetTrigger("Attack");
@@ -253,6 +426,7 @@ public class GridSlot : MonoBehaviour
             
         }
     }
+    */
     public void UnderAttack(float point,ObjectPool.VFX vfx)    //受击减血，无下限
     {
         //Debug.Log(CurOccup.name +IsMine + "" + Location.x + " " + Location.y + "Under Attack");
@@ -340,8 +514,10 @@ public class GridSlot : MonoBehaviour
     {
         Debug.Log("Death Final");
         CurOccup.Hide();         
-        CurOccup.HpSlider.gameObject.SetActive(false);//1.不显示
-        ObjectPool.ReturnObject(CurOccup.gameObject, CurOccup.occup);                            //2.当前的Occup Prefab封存
+        CurOccup.HpSlider.gameObject.SetActive(false);//1.不显示本体和Hp
+        ObjectPool.ReturnObject(CurOccup.gameObject, CurOccup.occup); //2.当前的Occup Prefab封存
+        CharaObj = null;
+        
         
         for (int i = Location.x + 1; i < BattleSystem.instance.BattleHeight; i++)                //3.后面全部上进位确认标识
         {

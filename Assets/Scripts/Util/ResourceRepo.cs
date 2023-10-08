@@ -32,6 +32,8 @@ public class ResourceRepo : MonoBehaviour
         foreach (Occupation.Occup occup in Enum.GetValues(typeof(Occupation.Occup)))
         {
             Occupation tmp = ObjectPool.GetPrefabByEnum(occup).GetComponent<Occupation>();//¿É¸Ä½ø
+            tmp.RefreshData();
+            Debug.Log(tmp.DataKey+":"+tmp.FireReq +" "+tmp.WaterReq +" " +tmp.GrassReq +" " +tmp.EarthReq);
             bool hasFind = false;
             for (int i = 0; i < LevelPriority.Count; i++)
             {

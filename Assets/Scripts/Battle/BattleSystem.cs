@@ -453,7 +453,7 @@ public class BattleSystem : MonoBehaviour
                 //My
                 MyBattleSlots[i][j].TacticInfoWindow = BattleInfoWindow;                                     //window
                 MyBattleSlots[i][j].Init(MyTacticSlots[i][j].CurOccup.occup, MyTacticSlots[i][j].data);      //data occup
-
+                Debug.Log("init "+ MyTacticSlots[i][j].CurOccup.occup + " at "+ MyBattleSlots[i][j].Location);
                 //Enemy
                 if (IsFirstEnemyGen)
                 {
@@ -466,7 +466,8 @@ public class BattleSystem : MonoBehaviour
                     EnemyBattleSlots[EnemyIndex[i]][j].TacticInfoWindow = BattleInfoWindow;
                     EnemyBattleSlots[EnemyIndex[i]][j].AddElementsByArray(RoundsAllElementAdd[EnemyIndex[i]]);                                                                                                                                                                                                                                                                                            
                 }
-
+                MyBattleSlots[i][j].CurOccup.Hide();
+                EnemyBattleSlots[EnemyIndex[i]][j].CurOccup.Hide();
             }
         }
 
@@ -509,23 +510,29 @@ public class BattleSystem : MonoBehaviour
                 if (!MyBattleSlots[i][j].IsDead)
                 {
                     MyTacticSlots[i][j].ExchangeData(MyBattleSlots[i][j],true);
+                    //MyBattleSlots[i][j].ExchangeData(MyTacticSlots[i][j],true);
+
                     MyTacticSlots[i][j].CurOccup.Hide();
                     Debug.Log("exchange at "+i +" "+ j);
                 }
                 else
                 {
                     Debug.Log("Regenerate New Base Character At: "+MyTacticSlots[i][j].Location);
-                    MyTacticSlots[i][j].ReGen();
+                    MyTacticSlots[i][j].Clear(true);
+                    MyTacticSlots[i][j].EnemyReGen();
                 }
-                //MyBattleSlots[i][j].Clear();    //data occup
+                MyBattleSlots[i][j].Clear(false);    //data occup
+
 
                 //Enemy
                 //EnemyBattleSlots[i][j].TacticInfoWindow = BattleInfoWindow;
                 if (EnemyBattleSlots[i][j].IsDead)
                 {
-                    EnemyBattleSlots[i][j].ReGen();
+                    EnemyBattleSlots[i][j].EnemyReGen();
                 }
                 EnemyBattleSlots[i][j].CurOccup.Hide();
+
+                //EnemyBattleSlots[i][j].Clear();    //data occup
             }
         }
         StartCoroutine(SlideMove(BattleUI, BattleMoveDistance.y, Vector2.up, 50, 1f));
